@@ -4,7 +4,7 @@ from genlayer import *
 
 
 class ConsensusGuard(gl.Contract):
-    verification_count: int
+    verification_count: u256
     last_claim: str
     last_decision: str
     last_reason: str
@@ -17,6 +17,7 @@ class ConsensusGuard(gl.Contract):
 
     @gl.public.write
     def verify_claim(self, claim: str, evidence: str) -> None:
+
         if not claim.strip():
             raise gl.vm.UserError("Claim cannot be empty")
 
@@ -98,10 +99,10 @@ Rules:
         self.last_reason = result["reason"]
 
     @gl.public.view
-    def get_status(self) -> dict:
-        return {
-            "verification_count": self.verification_count,
-            "last_claim": self.last_claim,
-            "last_decision": self.last_decision,
-            "last_reason": self.last_reason
-        }
+    def get_status(self) -> str:
+        return (
+            "count=" + str(self.verification_count)
+            + "; decision=" + self.last_decision
+            + "; claim=" + self.last_claim
+            + "; reason=" + self.last_reason
+        )
